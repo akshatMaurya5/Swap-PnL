@@ -1,0 +1,25 @@
+WITH data_swap AS (
+  SELECT
+    transaction_hash,
+    from_address AS sender,
+    to_address AS recipient,
+    token_address,
+    block_timestamp,
+    value,
+    log_index
+  FROM
+    `bigquery-public-data.crypto_ethereum.token_transfers`
+  WHERE
+    TIMESTAMP_TRUNC(block_timestamp, DAY) = TIMESTAMP("2024-01-21")
+)
+SELECT
+  transaction_hash,
+  sender,
+  recipient,
+  token_address,
+  block_timestamp,
+  value,
+  log_index
+FROM
+  data_swap
+  LIMIT 20000;
