@@ -1,7 +1,7 @@
 const { log } = require('console');
 const fs = require('fs');
 
-let input = JSON.parse(fs.readFileSync('filteredTransactions.json'))
+let input = JSON.parse(fs.readFileSync('singleSwaps.json'))
 
 
 let ans = []
@@ -71,3 +71,5 @@ input.forEach(item => {
 // log(ans);
 
 fs.writeFileSync('pairedSwaps.json', JSON.stringify(ans, null, 2));
+
+log('output in pairedSwaps.json')

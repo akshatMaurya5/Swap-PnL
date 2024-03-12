@@ -65,18 +65,21 @@ let stableCoins = [
     '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', // WETH
     '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'  // WBTC
 ]
-function filterTransactions(inputFileName, outputFileName, stableCoins) {
-    let input = JSON.parse(fs.readFileSync(inputFileName));
+// function filterTransactions(inputFileName, outputFileName, stableCoins) {
 
-    let filteredTransactions = input.filter(transaction => {
-        return transaction.swap.length > 0 && transaction.swap.every(swap => stableCoins.includes(swap.token_address.toLowerCase()));
-    });
+//     getSingleSwaps();
 
-    fs.writeFileSync(outputFileName, '');
-    fs.writeFileSync(outputFileName, JSON.stringify(filteredTransactions, null, 2));
-    log("final step done, output in filteredTransactions.json")
-}
+//     let input = JSON.parse(fs.readFileSync(inputFileName));
 
-// getSingleSwaps();
+//     let filteredTransactions = input.filter(transaction => {
+//         return transaction.swap.length > 0 && transaction.swap.every(swap => stableCoins.includes(swap.token_address.toLowerCase()));
+//     });
 
-filterTransactions('singleSwaps.json', 'filteredTransactions.json', stableCoins);
+//     fs.writeFileSync(outputFileName, '');
+//     fs.writeFileSync(outputFileName, JSON.stringify(filteredTransactions, null, 2));
+//     log("final step done, output in filteredTransactions.json")
+// }
+
+getSingleSwaps();
+
+// filterTransactions('singleSwaps.json', 'filteredTransactions.json', stableCoins);

@@ -1,0 +1,12 @@
+getTxns.json
+
+first function in newAlgo.js
+second function in newAlgo.js
+
+gettingStableSwaps.json
+pairingSwaps.js
+
+
+then u can use arrange pools
+
+then finally run pnl.js

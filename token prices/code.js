@@ -55,7 +55,13 @@ function getPnL() {
 
         log(swap);
 
+        log(item.transaction_hash)
         let timestamp = swap.unixTimestamp;
+
+
+        log(timestamp)
+
+        // log("_------------------------------------------------------------------------------------_")
 
         let amount0 = swap.amount0;
         let symbol0 = swap.token0_symbol;

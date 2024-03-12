@@ -7,7 +7,6 @@ function groupTransactions(inputFilePath, outputFilePath) {
         const transactions = JSON.parse(data);
         fs.writeFileSync(outputFilePath, '');
 
-        // Group transactions by transaction_hash
         const groupedTransactions = transactions.reduce((groups, transaction) => {
             const hash = transaction.transaction_hash;
             if (!groups[hash]) {
@@ -205,7 +204,8 @@ function getOrderFromBack(logs, initial_sender) {
 
 function doWork() {
 
-    let input = JSON.parse(fs.readFileSync('output.json'));
+    // let input = JSON.parse(fs.readFileSync('output.json'));
+    let input = JSON.parse(fs.readFileSync('output for jarod acc..json'));
     let ans = []
     // log(input)
 
@@ -353,8 +353,6 @@ function doWork() {
 }
 
 // groupTransactions('output.json', 'output.json');
-// 
-doWork();
 
-// log("valid=", valid, " invalid=", invalid);
+doWork();
 
