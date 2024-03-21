@@ -4,8 +4,6 @@ const fs = require('fs')
 let input = fs.readFileSync('pairedSwaps.json')
 input = JSON.parse(input)
 
-// log(input);
-
 let pools = new Map();
 
 function makePool(token0, token1) {
@@ -14,14 +12,30 @@ function makePool(token0, token1) {
     return pool;
 }
 
-
 function arrangeInPools() {
     input.forEach(item => {
         let swaps = item.swaps;
+        let initial_sender = item.initial_sender;
 
         swaps.forEach(swap => {
             let token0 = swap.token0_symbol;
             let token1 = swap.token1_symbol;
+
+            let newSwap = {
+                "transaction_hash": item.transaction_hash,
+                "initial_sender": initial_sender,
+                "sender": swap.sender,
+                "recipient": swap.recipient,
+                "block_timestamp": swap.block_timestamp,
+                "unixTimestamp": swap.unixTimestamp,
+                "token0_address": swap.token0_address,
+                "token0_symbol": swap.token0_symbol,
+                "amount0": swap.amount0,
+                "token1_address": swap.token1_address,
+                "token1_symbol": swap.token1_symbol,
+                "amount1": swap.amount1
+
+            }
 
             let pool = makePool(token0, token1);
 
@@ -29,31 +43,36 @@ function arrangeInPools() {
                 pools.set(pool, []);
             }
 
-            pools.get(pool).push(swap);
+            pools.get(pool).push(newSwap);
         })
     })
 }
 
-
-
 arrangeInPools();
 
-// log(pools);
+// Create an array of pool names
+let onlyNames = Array.from(pools.keys());
+
+// Convert the Map to an object
+// let poolsObject = {};
 
 
-let poolsObject = {};
-let onlyNames = [];
+let ans = []
 pools.forEach((value, key) => {
-    onlyNames.push(key);
-    poolsObject[key] = value;
+    // poolsObject[key] = value;
+    let obj = {
+        "pool": key,
+        "swaps": value
+    }
+
+    ans.push(obj);
+
 });
 
-// Convert object to JSON string
-let json = JSON.stringify(poolsObject, null, 2);
+// Write poolsObject to JSON file
+fs.writeFileSync('temp.json', JSON.stringify(ans, null, 2));
 
-// Write JSON string to file
-fs.writeFileSync('temp.json', json);
+log("output in temp.json")
 
+// Write onlyNames array to JSON file
 fs.writeFileSync('poolNames.json', JSON.stringify(onlyNames));
-
-

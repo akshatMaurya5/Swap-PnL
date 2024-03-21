@@ -205,7 +205,7 @@ function getOrderFromBack(logs, initial_sender) {
 function doWork() {
 
     // let input = JSON.parse(fs.readFileSync('output.json'));
-    let input = JSON.parse(fs.readFileSync('output for jarod acc..json'));
+    let input = JSON.parse(fs.readFileSync('output.json'));
     let ans = []
     // log(input)
 
@@ -352,7 +352,7 @@ function doWork() {
 
 }
 
-// groupTransactions('output.json', 'output.json');
+groupTransactions('output.json', 'output.json');
 
-doWork();
+// doWork();
 
