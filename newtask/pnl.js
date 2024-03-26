@@ -1,23 +1,14 @@
-//const { log } = require('console');
 const { log } = require('console');
-const fs = require('fs');
+const fs = require('fs')
 
-let input = fs.readFileSync('swapsAddressWiseCopy.json')
-input = JSON.parse(input);
-
-//// log(input)
-
-let wethMap = new Map();
-
-function fillMap() {
-    let data = fs.readFileSync('tokenPrices/wethPrice.json')
+function fillMap(map, path) {
+    let data = fs.readFileSync(path)
     data = JSON.parse(data);
 
     data.forEach(item => {
-        wethMap.set(item.unixTimestamp, item.price);
+        map.set(item.unixTimestamp, item.price);
     });
 }
-
 function findClosestKey(number) {
     let closestKey;
     let minDifference = Infinity;
@@ -33,134 +24,63 @@ function findClosestKey(number) {
     return closestKey;
 }
 
-function pnl() {
 
-    let tokenCnt = new Map();
-    let symbol = "CLOSEDAI"
+function pnl(input) {
 
     let ans = []
     input.forEach(item => {
+        let initial_sender = item.initial_sender;
+        let transactions = item.transactions;
 
-        let txns = item.transactions;
-
-        let sender = item.initial_sender;
-
-        let used = 0;
+        let spent = 0;
         let got = 0;
 
-        let soldAmt = 0;
-
-        let amountOfClosedAI = 0;
-
-        txns.forEach(txn => {
-            let swaps = txn.swaps;
-
+        transactions.forEach(transaction => {
+            let swaps = transaction.swaps;
 
             swaps.forEach(swap => {
+                let token0_symbol = swap.token0_symbol;
+                let token1_symbol = swap.token1_symbol;
+                let token0_amount = swap.amount0;
+                let token1_amount = swap.amount1;
+                let timestamp = swap.unixTimestamp;
 
-                if (swap.token0_symbol == "WETH") { //case of buying closed ai against weth
-                    //log("yes");
-                    let timestamp = swap.unixTimestamp;
-                    let priceOfWethAtThatPointOfTime = wethMap.get(findClosestKey(timestamp));
-
-                    let token0amt = swap.amount0;
-                    let token1amt = swap.amount1;
-
-                    amountOfClosedAI += (swap.amount1);
-                    amountOfClosedAI.toFixed(5)
-
-
-                    //log("swap.amount1: " + swap.amount1);
-                    //log("sum = ", amountOfClosedAI);
-                    used += (token0amt * priceOfWethAtThatPointOfTime);
-
-                    //// log("amtGotOf_CAI:", token1amt)
-
-                    if (!tokenCnt.has(symbol)) {
-                        tokenCnt.set(symbol, token1amt);
-                    }
-                    else {
-                        tokenCnt.set(symbol, tokenCnt.get(symbol) + token1amt);
-                    }
+                if (token0_symbol == "WETH" && token1_symbol == "CLOSEDAI") {
+                    // WETH -> CLOSEDAI
+                    let priceOfToken0AtThatTime = wethMap.get(findClosestKey(timestamp));
+                    let moneySpent = token0_amount * priceOfToken0AtThatTime;
+                    spent += moneySpent;
                 }
-                else { // case of selling cai for weth
-                    //log("other")
-                    let amountWeth = swap.amount1;
-                    let amountClosedAISwapped = swap.amount0;
-
-                    let timestamp = swap.unixTimestamp;
-                    let priceOfWethAtThatPointOfTime = wethMap.get(findClosestKey(timestamp));
-
-                    soldAmt += swap.amount0;
-                    got += (amountWeth * priceOfWethAtThatPointOfTime);
-
-                    // if (amountClosedAISwapped <= amountOfClosedAI) {
-                    ////     log("in 1")
-                    //     soldAmt += swap.amount0;
-                    //     got += (amountWeth * priceOfWethAtThatPointOfTime);
-                    // }
-                    // else {
-                    ////     log("in 2")
-                    //     let amountReceived = amountWeth * priceOfWethAtThatPointOfTime;
-                    //     let amountReceivedPerToken = amountReceived / amountClosedAISwapped;
-
-                    //     got += (amountOfClosedAI * amountReceivedPerToken);
-                    //     amountOfClosedAI = 0;
-                    // }
-
-
-
+                else if (token0_symbol == "CLOSEDAI" && token1_symbol == "WETH") {
+                    // CLOSEDAI -> WETH
+                    let priceOfToken1AtThatTime = wethMap.get(findClosestKey(timestamp));
+                    let moneyGot = token1_amount * priceOfToken1AtThatTime;
+                    got += moneyGot;
                 }
-            })
-        })
+            });
+        });
 
-
-
-
-
-        let inHand = tokenCnt.get(symbol)
-
-
-        //// log(tokenCnt);
-
-        //// log("inhand=", inHand)
-        //// log("sold  =", soldAmt);
-
-        //log("----------------------------------------------------------------")
-
-        //// log("used = ", used);
-        //// log("got  = ", got);
-
-
-
-        //log("-----------------------------------------------------------------------")
-        //log("-----------------------------------------------------------------------")
-
-
-        //log("-----------------------------------------------------------------------")
-        //log("-----------------------------------------------------------------------")
-        //// log("account:", sender)
-        //// log("PnL=", got - used);
-        //log("-----------------------------------------------------------------------")
-        //log("-----------------------------------------------------------------------")
+        let pnl = got - spent;
 
         let obj = {
-            "address": sender,
-            "PnL": got - used
-        }
-        // log(obj);
+            "sender": initial_sender,
+            "pnl": pnl
+        };
+        log(obj);
         ans.push(obj);
-
-    })
-
-    ans.sort((a, b) => {
-        return a.PnL > b.PnL;
-    })
+    });
 
     fs.writeFileSync("pnl.json", JSON.stringify(ans, null, 2))
     log("done, output in pnl.json")
-
 }
 
-fillMap();
-pnl();
+
+
+let wethMap = new Map();
+fillMap(wethMap, 'tokenPrices/wethPrice.json');
+// pnl(JSON.parse(fs.readFileSync('swapsAddressWiseCopy.json')));
+pnl(JSON.parse(fs.readFileSync('check.json')));
+
+
+
+// log(wethMap)

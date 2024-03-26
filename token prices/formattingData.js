@@ -1,7 +1,7 @@
 const { log } = require('console');
 const fs = require('fs');
 
-let path = "wethPrice.json";
+let path = "usdcPrice.json";
 let input = fs.readFileSync(path)
 input = JSON.parse(input);
 

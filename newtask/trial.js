@@ -1,33 +1,47 @@
 const { log } = require('console');
+const { assertNormalize } = require('ethers');
 const fs = require('fs');
 
-let input1 = fs.readFileSync('pnl1.json');
+let input1 = fs.readFileSync('pnl.json');
 input1 = JSON.parse(input1);
 
-let input2 = fs.readFileSync('pnl2.json');
+let input2 = fs.readFileSync('pnl1.json');
 input2 = JSON.parse(input2);
 
-let ans = [];
-let mpp = new Map();
+let mpp1 = new Map();
 
 input1.forEach(item => {
-    // log(item);
-    mpp.set(item.address, item.PnL);
-});
-// log(mpp.get('0xbc05a930f9c959244cb79b6e1d10e947067e73ba'))
+    mpp1.set(item.address, item.PnL);
+})
 
-// log(mpp);
+// log(mpp1);
+
+let same = 0;
+
+// log(input2)
+
+let cnt = 0;
+let res = []
 
 input2.forEach(item => {
-    let obj = {
-        "address": item.address,
-        "PnL1": mpp.get(item.address),
-        "PnL2": item.PnL
+
+    if (item.pnl != mpp1.get(item.sender)) {
+        log(item.sender)
+        cnt++;
     }
-    ans.push(obj);
-});
+    let curr = {
+        "sender": item.sender,
+        "pnlOrig": mpp1.get(item.sender),
+        "pnl": item.pnl
+    };
+    // log(curr)
 
-log(ans);
+    res.push(curr)
 
-fs.writeFileSync('pnl.json', JSON.stringify(ans, null, 2));
 
+})
+
+log(res.length)
+log(cnt)
+
+fs.writeFileSync('compare.json', JSON.stringify(res, null, 2), 'utf8')
