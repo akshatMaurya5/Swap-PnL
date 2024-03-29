@@ -9,15 +9,15 @@
         "**/node_modules": true,
         "package-lock.json": true,
         "package.json": true,
-        ".env": true,
         "README.md": true,
-        ".gitignore": true
+        ".gitignore": true,
+        ".env": true
     },
     "hide-files.files": [
         "package-lock.json",
         "package.json",
-        ".env",
         "README.md",
-        ".gitignore"
+        ".gitignore",
+        ".env"
     ]
 }

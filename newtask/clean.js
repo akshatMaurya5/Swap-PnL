@@ -3,7 +3,7 @@
 const { log } = require('console');
 const fs = require('fs');
 
-let input = fs.readFileSync('swapsAddressWiseCopy.json');
+let input = fs.readFileSync('finalSwaps.json');
 input = JSON.parse(input);
 let st = new Set();
 st.add("CLOSEDAI")

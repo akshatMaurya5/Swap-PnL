@@ -45,13 +45,13 @@ function pnl(input) {
                 let token1_amount = swap.amount1;
                 let timestamp = swap.unixTimestamp;
 
-                if (token0_symbol == "WETH" && token1_symbol == "CLOSEDAI") {
+                if (token0_symbol == "WETH" && token1_symbol == "DSync") {
                     // WETH -> CLOSEDAI
                     let priceOfToken0AtThatTime = wethMap.get(findClosestKey(timestamp));
                     let moneySpent = token0_amount * priceOfToken0AtThatTime;
                     spent += moneySpent;
                 }
-                else if (token0_symbol == "CLOSEDAI" && token1_symbol == "WETH") {
+                else if (token0_symbol == "DSync" && token1_symbol == "WETH") {
                     // CLOSEDAI -> WETH
                     let priceOfToken1AtThatTime = wethMap.get(findClosestKey(timestamp));
                     let moneyGot = token1_amount * priceOfToken1AtThatTime;
@@ -62,24 +62,30 @@ function pnl(input) {
 
         let pnl = got - spent;
 
+        // pnl = Math.abs(pnl);
+
         let obj = {
             "sender": initial_sender,
             "pnl": pnl
         };
-        log(obj);
+        // log(obj);
         ans.push(obj);
     });
+
+    ans.sort((a, b) => b.pnl - a.pnl);
 
     fs.writeFileSync("pnl.json", JSON.stringify(ans, null, 2))
     log("done, output in pnl.json")
 }
 
 
+log(findClosestKey(1710946559))
+
 
 let wethMap = new Map();
 fillMap(wethMap, 'tokenPrices/wethPrice.json');
 // pnl(JSON.parse(fs.readFileSync('swapsAddressWiseCopy.json')));
-pnl(JSON.parse(fs.readFileSync('check.json')));
+// pnl(JSON.parse(fs.readFileSync('finalSwaps.json')));
 
 
 

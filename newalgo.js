@@ -4,6 +4,8 @@ const fs = require('fs');
 function groupTransactions(inputFilePath, outputFilePath) {
     try {
         const data = fs.readFileSync(inputFilePath, 'utf8');
+
+        log("here");
         const transactions = JSON.parse(data);
         fs.writeFileSync(outputFilePath, '');
 
