@@ -79,13 +79,13 @@ function pnl(input) {
 }
 
 
-log(findClosestKey(1710946559))
+// log(findClosestKey(1710946559))
 
 
 let wethMap = new Map();
 fillMap(wethMap, 'tokenPrices/wethPrice.json');
 // pnl(JSON.parse(fs.readFileSync('swapsAddressWiseCopy.json')));
-// pnl(JSON.parse(fs.readFileSync('finalSwaps.json')));
+pnl(JSON.parse(fs.readFileSync('finalSwaps.json')));
 
 
 
